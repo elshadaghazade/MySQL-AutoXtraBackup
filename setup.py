@@ -1,6 +1,29 @@
 from setuptools import setup
+from os.path import expanduser
 
-datafiles = [('/etc', ['general_conf/bck.conf'])]
+backupdir = expanduser("~");
+confFilePath = 'general_conf/bck.conf';
+
+datafiles = [('/etc', [confFilePath])]
+
+try:
+    fp = open(confFilePath, 'r');
+    content = fp.readlines();
+    i = 0;
+    for var in content:
+        if (var.startswith("backupdir")):
+            content[i] = "backupdir=" + backupdir + "/backup_dir\n"
+        i += 1
+    fp.close();
+    
+    fp = open(confFilePath, 'w');
+    
+    for var in content:
+        fp.write(var)
+    fp.close();
+except Exception as e:
+    print e;
+    
 
 setup(
     name='mysql-autoxtrabackup',
